@@ -1,0 +1,28 @@
+unit Resources.Strings.uStrDados;
+
+interface
+type
+  TConstConexao = class
+  public
+  const
+    _ksCCBanco = 'vendaprodutos';
+    _ksCCPorta = '3306';
+    _ksCCBiblioteca = '\LIBMYSQL.DLL';
+    _ksCCSenha = '';
+    _ksCCServidor = 'localhost:
+  end;
+
+  TConstSesoes = class
+  public
+  const
+    _ksCSSessaoConexao = 'CONEXAO';
+    _ksCSSubSessaBanco = 'BANCO';
+    _ksCSSubSessaBiblioteca = 'BIBLIOTECA';
+    _ksCSSubSessaSenha = 'SENHA';
+    _ksCSSubSessaServidor = 'SERVIDOR';
+    _ksCSSubSessaPorta = 'PORTA';
+  end;
+
+implementation
+
+end.

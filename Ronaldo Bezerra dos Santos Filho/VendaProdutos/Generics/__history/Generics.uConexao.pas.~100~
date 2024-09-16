@@ -1,0 +1,207 @@
+unit Generics.uConexao;
+
+interface
+uses FireDAC.Phys.MySQL, FireDAC.Comp.Client, Resources.Strings.uStrDados, IniFiles, SysUtils,
+Resources.strings.uStrDadosErro, Forms, Rtti, Resources.Strings.uStrPrefixos, Classes,
+vcl.StdCtrls, FireDAC.Stan.Def;
+
+type
+  IConexao = interface
+  ['{491320BE-6F25-4A42-9536-06A4FE52439F}']
+    function PreencherTela(AoForm: TForm): IConexao;
+    function CarregarArquivo: IConexao;
+    function ConfigurarConexao: IConexao;
+    function TestarConexao: IConexao;
+    function AtualizarDadosConexao(AoForm: TForm): IConexao;
+    function GravarArquivo: IConexao;
+  end;
+
+  TConexao = class(TInterfacedObject, IConexao)
+  private
+    FsBanco: string;
+    FsBiblioteca: string;
+    FnPorta: integer;
+    FsServidor: string;
+    FsSenha: string;
+    FsUsuario: string;
+    FoIni: TIniFile;
+    FoFireCon: TFDConnection;
+    FoFireLink: TFDPhysMySQLDriverLink;
+
+    function GetPath: string;
+    function GetRttiPropriedades: TArray<TRttiProperty>;
+
+  public
+    class function New: IConexao;
+    function PreencherTela(AoForm: TForm): IConexao;
+    function ConfigurarConexao: IConexao;
+    function CarregarArquivo: IConexao;
+    function TestarConexao: IConexao;
+    function AtualizarDadosConexao(AoForm: TForm): IConexao;
+    function GravarArquivo: IConexao;
+
+  published
+    property Banco: string read FsBanco write FsBanco;
+    property Biblioteca: string read FsBiblioteca write FsBiblioteca;
+    property Porta: integer read FnPorta write FnPorta;
+    property Servidor: string read FsServidor write FsServidor;
+    property Senha: string read FsSenha write FsSenha;
+    property Usuario: string read FsUsuario write FsUsuario;
+    property Conexao: TFDConnection read FoFireCon;
+  end;
+
+implementation
+
+function TConexao.ConfigurarConexao: IConexao;
+begin
+  Result := Self;
+  FoFireLink := TFDPhysMySQLDriverLink.Create(nil);
+  FoFireLink.VendorLib := Self.Biblioteca;
+
+  FoFireCon := TFDConnection.Create(nil);
+
+  with FoFireCon.Params do
+  begin
+    Add(TConstFireDACCon._ksCFDatabase + Self.Banco);
+    Add(TConstFireDACCon._ksCFUserName + Self.Usuario);
+    Add(TConstFireDACCon._ksCFPassword + Self.Senha);
+    Add(TConstFireDACCon._ksCFServer + Self.Servidor);
+    Add(TConstFireDACCon._ksCFDriverID);
+  end;
+end;
+
+function TConexao.GetPath: string;
+begin
+  result := ExtractFileDir(GetCurrentDir);
+end;
+
+class function TConexao.New: IConexao;
+begin
+  Result := TConexao.Create;
+  Result.CarregarArquivo;
+end;
+
+function TConexao.CarregarArquivo: IConexao;
+begin
+  Result := Self;
+  FoIni := TIniFile.Create(GetPath+TConstConexao._ksCCbiblioteca);
+
+  Self.Banco := FoIni.ReadString(TConstSesoes._ksCSSessaoConexao,
+                                 TConstSesoes._ksCSSubSessaBanco,
+                                 TConstConexao._ksCCBanco);
+
+  Self.Biblioteca := FoIni.ReadString(TConstSesoes._ksCSSessaoConexao,
+                                      TConstSesoes._ksCSSubSessaBiblioteca,
+                                      GetPath + TConstConexao._ksCCBiblioteca);
+
+  Self.Servidor := FoIni.ReadString(TConstSesoes._ksCSSessaoConexao,
+                                    TConstSesoes._ksCSSubSessaServidor,
+                                    TConstConexao._ksCCServidor);
+
+  Self.Porta := FoIni.ReadInteger(TConstSesoes._ksCSSessaoConexao,
+                                  TConstSesoes._ksCSSubSessaPorta,
+                                  TConstConexao._knCCPorta);
+
+  Self.Senha := FoIni.ReadString(TConstSesoes._ksCSSessaoConexao,
+                                 TConstSesoes._ksCSSubSessaSenha,
+                                 TConstConexao._ksCCSenha);
+
+  Self.Usuario := FoIni.ReadString(TConstSesoes._ksCSSessaoConexao,
+                                   TConstSesoes._ksCSSubSessaUsuario,
+                                   TConstConexao._ksCCUsuario);
+end;
+
+function TConexao.GravarArquivo: IConexao;
+begin
+  Result := Self;
+  FoIni.WriteString(TConstSesoes._ksCSSessaoConexao,
+                    TConstSesoes._ksCSSubSessaBanco,
+                    Self.Banco);
+
+  FoIni.WriteString(TConstSesoes._ksCSSessaoConexao,
+                    TConstSesoes._ksCSSubSessaBiblioteca,
+                    Self.Biblioteca);
+
+  FoIni.WriteString(TConstSesoes._ksCSSessaoConexao,
+                    TConstSesoes._ksCSSubSessaServidor,
+                    Self.Servidor);
+
+  FoIni.WriteInteger(TConstSesoes._ksCSSessaoConexao,
+                     TConstSesoes._ksCSSubSessaPorta,
+                     Self.Porta);
+
+  FoIni.WriteString(TConstSesoes._ksCSSessaoConexao,
+                    TConstSesoes._ksCSSubSessaSenha,
+                    Self.Senha);
+
+  FoIni.WriteString(TConstSesoes._ksCSSessaoConexao,
+                    TConstSesoes._ksCSSubSessaUsuario,
+                    Self.Usuario);
+end;
+
+function TConexao.GetRttiPropriedades: TArray<TRttiProperty>;
+var
+  oRttiContextoConexao: TRttiContext;
+  oRttiTtipoConexao: TRttiType;
+begin
+  oRttiContextoConexao := TRttiContext.Create;
+  oRttiTtipoConexao := oRttiContextoConexao.GetType(Self.ClassInfo);
+  Result := oRttiTtipoConexao.GetProperties;
+end;
+
+function TConexao.PreencherTela(AoForm: TForm): IConexao;
+var
+  oRttiPropriedadeConexao: TRttiProperty;
+  oComponente: TComponent;
+begin
+  Result := Self;
+
+  for oRttiPropriedadeConexao in GetRttiPropriedades do
+  begin
+    oComponente := AoForm.FindComponent(TConstPrefixoCampoTela._ksCPEdit + oRttiPropriedadeConexao.Name);
+    if (oComponente is TEdit) then
+    begin
+      (oComponente as TEdit).Text := oRttiPropriedadeConexao.GetValue(Self).ToString;
+    end;
+  end;
+end;
+
+function TConexao.AtualizarDadosConexao(AoForm: TForm): IConexao;
+var
+  oRttiPropriedadeConexao: TRttiProperty;
+  oComponente: TComponent;
+begin
+  Result := Self;
+
+  for oRttiPropriedadeConexao in GetRttiPropriedades do
+  begin
+    oComponente := AoForm.FindComponent(TConstPrefixoCampoTela._ksCPEdit + oRttiPropriedadeConexao.Name);
+    if (oComponente is TEdit) then
+    begin
+      case oRttiPropriedadeConexao.DataType.TypeKind of
+        tkString, tkUString, tkWString: oRttiPropriedadeConexao.SetValue(Self, (oComponente as TEdit).Text);
+        tkInteger: oRttiPropriedadeConexao.SetValue(Self, StrToInt((oComponente as TEdit).Text));
+      end;
+
+
+    end;
+  end;
+end;
+
+function TConexao.TestarConexao: IConexao;
+begin
+  Result := Self;
+  try
+    try
+      FoFireCon.Open;
+    except on E: Exception do
+      begin
+        raise Exception.Create(TConstDadosErro._ksCDErroConexao + E.Message);
+      end;
+    end;
+  finally
+    FoFireCon.Close;
+  end;
+end;
+
+end.

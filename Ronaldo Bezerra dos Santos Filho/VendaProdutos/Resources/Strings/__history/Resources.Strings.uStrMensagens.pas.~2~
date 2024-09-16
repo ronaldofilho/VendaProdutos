@@ -1,0 +1,13 @@
+unit Resources.Strings.uStrMensagens;
+
+interface
+type
+  TConstMensagens = class
+  public
+  const
+    _ksCMConectadoComSucesso = 'Conexão realizada com sucesso';
+  end;
+
+implementation
+
+end.

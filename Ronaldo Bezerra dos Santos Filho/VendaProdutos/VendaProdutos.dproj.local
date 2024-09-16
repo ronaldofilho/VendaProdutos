@@ -1,0 +1,70 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>2024/09/13 13:55:53.000.791,=C:\Users\ronal\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>2024/09/13 14:01:17.000.352,D:\Projetos\Delphi\DesafioDelphi\WK\Ronaldo Bezerra dos Santos Filho\VendaProdutos\uFrmDadosConexao.dfm=C:\Users\ronal\Documents\Embarcadero\Studio\Projects\Unit1.dfm</Transaction>
+    <Transaction>2024/09/13 14:01:17.000.352,D:\Projetos\Delphi\DesafioDelphi\WK\Ronaldo Bezerra dos Santos Filho\VendaProdutos\uFrmDadosConexao.pas=C:\Users\ronal\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>2024/09/13 14:02:04.000.947,D:\Projetos\Delphi\DesafioDelphi\WK\Ronaldo Bezerra dos Santos Filho\VendaProdutos\VendaProdutos.dproj=C:\Users\ronal\Documents\Embarcadero\Studio\Projects\Project1.dproj</Transaction>
+    <Transaction>2024/09/13 14:15:04.000.753,=D:\Projetos\Delphi\DesafioDelphi\WK\Ronaldo Bezerra dos Santos Filho\VendaProdutos\Unit1.pas</Transaction>
+    <Transaction>2024/09/13 14:15:22.000.167,D:\Projetos\Delphi\DesafioDelphi\WK\Ronaldo Bezerra dos Santos Filho\VendaProdutos\Generics\uConexao.pas=D:\Projetos\Delphi\DesafioDelphi\WK\Ronaldo Bezerra dos Santos Filho\VendaProdutos\Unit1.pas</Transaction>
+    <Transaction>2024/09/13 14:26:59.000.004,=D:\Projetos\Delphi\DesafioWK\Ronaldo Bezerra dos Santos Filho\VendaProdutos\Unit1.pas</Transaction>
+    <Transaction>2024/09/13 14:27:26.000.489,D:\Projetos\Delphi\DesafioWK\Ronaldo Bezerra dos Santos Filho\VendaProdutos\Resources\Strings\uStrDados.pas=D:\Projetos\Delphi\DesafioWK\Ronaldo Bezerra dos Santos Filho\VendaProdutos\Unit1.pas</Transaction>
+    <Transaction>2024/09/13 14:51:08.000.491,D:\Projetos\Delphi\DesafioWK\Ronaldo Bezerra dos Santos Filho\VendaProdutos\Resources\Strings\uStrDados.pas=D:\Projetos\Delphi\DesafioWK\Ronaldo Bezerra dos Santos Filho\VendaProdutos\Resources\Strings\Resources.Strings.uStrDados.pas</Transaction>
+    <Transaction>2024/09/13 15:43:31.000.896,=D:\Projetos\Delphi\DesafioWK\Ronaldo Bezerra dos Santos Filho\VendaProdutos\Unit1.pas</Transaction>
+    <Transaction>2024/09/13 15:44:08.000.827,D:\Projetos\Delphi\DesafioWK\Ronaldo Bezerra dos Santos Filho\VendaProdutos\Resources\Strings\Resources.Strings.uStrDadosErro.pas=D:\Projetos\Delphi\DesafioWK\Ronaldo Bezerra dos Santos Filho\VendaProdutos\Unit1.pas</Transaction>
+    <Transaction>2024/09/14 10:15:41.000.357,=D:\Projetos\Delphi\DesafioWK\Ronaldo Bezerra dos Santos Filho\VendaProdutos\Unit1.pas</Transaction>
+    <Transaction>2024/09/14 10:16:47.000.849,D:\Projetos\Delphi\DesafioWK\Ronaldo Bezerra dos Santos Filho\VendaProdutos\Unit1.pas=D:\Projetos\Delphi\DesafioWK\Ronaldo Bezerra dos Santos Filho\VendaProdutos\Resources\Strings\Resources.Strings.uStrPrefixos.pas</Transaction>
+    <Transaction>2024/09/14 17:05:27.000.011,=D:\Projetos\Delphi\DesafioWK\Ronaldo Bezerra dos Santos Filho\VendaProdutos\Unit1.pas</Transaction>
+    <Transaction>2024/09/14 17:05:51.000.642,D:\Projetos\Delphi\DesafioWK\Ronaldo Bezerra dos Santos Filho\VendaProdutos\Resources\Strings\Resources.Strings.uStrMensagens.pas=D:\Projetos\Delphi\DesafioWK\Ronaldo Bezerra dos Santos Filho\VendaProdutos\Unit1.pas</Transaction>
+    <Transaction>2024/09/14 17:14:55.000.304,=D:\Projetos\Delphi\DesafioWK\Ronaldo Bezerra dos Santos Filho\VendaProdutos\Unit1.pas</Transaction>
+    <Transaction>2024/09/14 17:16:06.000.005,D:\Projetos\Delphi\DesafioWK\Ronaldo Bezerra dos Santos Filho\VendaProdutos\Generics\Generics.uController.pas=D:\Projetos\Delphi\DesafioWK\Ronaldo Bezerra dos Santos Filho\VendaProdutos\Unit1.pas</Transaction>
+    <Transaction>2024/09/14 17:32:38.000.145,=D:\Projetos\Delphi\DesafioWK\Ronaldo Bezerra dos Santos Filho\VendaProdutos\Unit1.pas</Transaction>
+    <Transaction>2024/09/14 17:33:05.000.537,D:\Projetos\Delphi\DesafioWK\Ronaldo Bezerra dos Santos Filho\VendaProdutos\Resources\Strings\Resources.Strings.uStrSQLs.pas=D:\Projetos\Delphi\DesafioWK\Ronaldo Bezerra dos Santos Filho\VendaProdutos\Unit1.pas</Transaction>
+    <Transaction>2024/09/15 06:38:06.000.120,=D:\Projetos\Delphi\DesafioWK\Ronaldo Bezerra dos Santos Filho\VendaProdutos\Unit1.pas</Transaction>
+    <Transaction>2024/09/15 06:38:21.000.848,D:\Projetos\Delphi\DesafioWK\Ronaldo Bezerra dos Santos Filho\VendaProdutos\Unit1.pas=D:\Projetos\Delphi\DesafioWK\Ronaldo Bezerra dos Santos Filho\VendaProdutos\Controller\Controller.uProdutos.pas</Transaction>
+    <Transaction>2024/09/15 08:06:19.000.014,=D:\Projetos\Delphi\DesafioWK\Ronaldo Bezerra dos Santos Filho\VendaProdutos\Unit1.pas</Transaction>
+    <Transaction>2024/09/15 08:06:37.000.383,D:\Projetos\Delphi\DesafioWK\Ronaldo Bezerra dos Santos Filho\VendaProdutos\Unit1.dfm=D:\Projetos\Delphi\DesafioWK\Ronaldo Bezerra dos Santos Filho\VendaProdutos\View\uFrmConsulta.dfm</Transaction>
+    <Transaction>2024/09/15 08:06:37.000.383,D:\Projetos\Delphi\DesafioWK\Ronaldo Bezerra dos Santos Filho\VendaProdutos\Unit1.pas=D:\Projetos\Delphi\DesafioWK\Ronaldo Bezerra dos Santos Filho\VendaProdutos\View\uFrmConsulta.pas</Transaction>
+    <Transaction>2024/09/15 08:42:56.000.786,=D:\Projetos\Delphi\DesafioWK\Ronaldo Bezerra dos Santos Filho\VendaProdutos\Unit1.pas</Transaction>
+    <Transaction>2024/09/15 08:43:39.000.124,D:\Projetos\Delphi\DesafioWK\Ronaldo Bezerra dos Santos Filho\VendaProdutos\Unit1.pas=D:\Projetos\Delphi\DesafioWK\Ronaldo Bezerra dos Santos Filho\VendaProdutos\View\uFrmPrincipal.pas</Transaction>
+    <Transaction>2024/09/15 08:43:39.000.124,D:\Projetos\Delphi\DesafioWK\Ronaldo Bezerra dos Santos Filho\VendaProdutos\Unit1.dfm=D:\Projetos\Delphi\DesafioWK\Ronaldo Bezerra dos Santos Filho\VendaProdutos\View\uFrmPrincipal.dfm</Transaction>
+    <Transaction>2024/09/15 08:49:54.000.377,=D:\Projetos\Delphi\DesafioWK\Ronaldo Bezerra dos Santos Filho\VendaProdutos\Unit1.pas</Transaction>
+    <Transaction>2024/09/15 08:50:05.000.531,D:\Projetos\Delphi\DesafioWK\Ronaldo Bezerra dos Santos Filho\VendaProdutos\Unit1.pas=D:\Projetos\Delphi\DesafioWK\Ronaldo Bezerra dos Santos Filho\VendaProdutos\Controller\Controller.uClientes.pas</Transaction>
+    <Transaction>2024/09/15 09:35:52.000.137,=D:\Projetos\Delphi\DesafioWK\Ronaldo Bezerra dos Santos Filho\VendaProdutos\Unit1.pas</Transaction>
+    <Transaction>2024/09/15 09:36:46.000.824,D:\Projetos\Delphi\DesafioWK\Ronaldo Bezerra dos Santos Filho\VendaProdutos\Unit1.dfm=D:\Projetos\Delphi\DesafioWK\Ronaldo Bezerra dos Santos Filho\VendaProdutos\View\uFrmVenda.dfm</Transaction>
+    <Transaction>2024/09/15 09:36:46.000.824,D:\Projetos\Delphi\DesafioWK\Ronaldo Bezerra dos Santos Filho\VendaProdutos\Unit1.pas=D:\Projetos\Delphi\DesafioWK\Ronaldo Bezerra dos Santos Filho\VendaProdutos\View\uFrmVenda.pas</Transaction>
+    <Transaction>2024/09/15 10:39:53.000.735,=D:\Projetos\Delphi\DesafioWK\Ronaldo Bezerra dos Santos Filho\VendaProdutos\Unit1.pas</Transaction>
+    <Transaction>2024/09/15 10:40:19.000.787,D:\Projetos\Delphi\DesafioWK\Ronaldo Bezerra dos Santos Filho\VendaProdutos\Unit1.pas=D:\Projetos\Delphi\DesafioWK\Ronaldo Bezerra dos Santos Filho\VendaProdutos\Resources\Strings\Resources.Strings.uStrUtils.pas</Transaction>
+    <Transaction>2024/09/15 12:28:47.000.846,=D:\Projetos\Delphi\DesafioWK\Ronaldo Bezerra dos Santos Filho\VendaProdutos\Unit1.pas</Transaction>
+    <Transaction>2024/09/15 12:28:58.000.985,D:\Projetos\Delphi\DesafioWK\Ronaldo Bezerra dos Santos Filho\VendaProdutos\Unit1.pas=D:\Projetos\Delphi\DesafioWK\Ronaldo Bezerra dos Santos Filho\VendaProdutos\Controller\Controller.uPedidoCab.pas</Transaction>
+    <Transaction>2024/09/15 12:37:28.000.375,=D:\Projetos\Delphi\DesafioWK\Ronaldo Bezerra dos Santos Filho\VendaProdutos\Unit1.pas</Transaction>
+    <Transaction>2024/09/15 12:37:43.000.572,D:\Projetos\Delphi\DesafioWK\Ronaldo Bezerra dos Santos Filho\VendaProdutos\Unit1.pas=D:\Projetos\Delphi\DesafioWK\Ronaldo Bezerra dos Santos Filho\VendaProdutos\Controller\Controller.uPedidoItens.pas</Transaction>
+  </Transactions>
+	<ProjectSortOrder AutoSort="0" SortType="0">
+    <File Path="Controller"/>
+    <File Path="Controller\Controller.uClientes.pas"/>
+    <File Path="Controller\Controller.uProdutos.pas"/>
+    <File Path="Controller\Controller.uPedidoCab.pas"/>
+    <File Path="Controller\Controller.uPedidoItens.pas"/>
+    <File Path="Generics"/>
+    <File Path="Generics\Generics.uConexao.pas"/>
+    <File Path="Generics\Generics.uController.pas"/>
+    <File Path="Resources"/>
+    <File Path="Resources\Strings"/>
+    <File Path="Resources\Strings\Resources.Strings.uStrDados.pas"/>
+    <File Path="Resources\Strings\Resources.Strings.uStrDadosErro.pas"/>
+    <File Path="Resources\Strings\Resources.Strings.uStrMensagens.pas"/>
+    <File Path="Resources\Strings\Resources.Strings.uStrPrefixos.pas"/>
+    <File Path="Resources\Strings\Resources.Strings.uStrSQLs.pas"/>
+    <File Path="Resources\Strings\Resources.Strings.uStrUtils.pas"/>
+    <File Path="View"/>
+    <File Path="View\uFrmConsulta.pas"/>
+    <File Path="View\uFrmConsulta.dfm"/>
+    <File Path="View\uFrmDadosConexao.pas"/>
+    <File Path="View\uFrmDadosConexao.dfm"/>
+    <File Path="View\uFrmPrincipal.pas"/>
+    <File Path="View\uFrmPrincipal.dfm"/>
+    <File Path="View\uFrmVenda.pas"/>
+    <File Path="View\uFrmVenda.dfm"/>
+  </ProjectSortOrder>
+</BorlandProject>

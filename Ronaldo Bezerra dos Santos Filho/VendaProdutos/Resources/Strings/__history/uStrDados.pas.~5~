@@ -1,0 +1,15 @@
+unit uStrDados;
+
+interface
+type
+  TConstConexao = class
+  public
+  const
+    _ksCCBanco = 'vendaprodutos';
+    _ksCCPorta = '3306';
+    _ksCCbiblioteca = '\LIBMYSQL.DLL';
+  end;
+
+implementation
+
+end.

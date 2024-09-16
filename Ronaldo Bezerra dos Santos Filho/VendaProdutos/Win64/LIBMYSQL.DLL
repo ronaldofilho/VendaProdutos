@@ -1,0 +1,7 @@
+[CONEXAO]
+BANCO=vendaprodutos
+BIBLIOTECA=D:\Projetos\Delphi\DesafioWK\Ronaldo Bezerra dos Santos Filho\VendaProdutos\Lib\libmysql.dll
+SERVIDOR=localhost
+PORTA=3306
+SENHA=
+USUARIO=root

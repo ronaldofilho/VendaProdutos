@@ -1,0 +1,23 @@
+unit Controller.uProdutos;
+
+interface
+uses Generics.uController, Resources.Strings.uStrSQLs;
+type
+  TControllerProduto = class(TGenericController)
+
+  public
+    class function New: IController;
+  end;
+
+implementation
+
+{ TControllerProduto }
+
+class function TControllerProduto.New: IController;
+begin
+  Result := TControllerProduto.Create;
+  Result.SetTabela(TConstTabelas._ksCTProdutos)
+        .SetCamposListaTodos(TConstCamposProdutos.GetListaCamposSQL);
+end;
+
+end.

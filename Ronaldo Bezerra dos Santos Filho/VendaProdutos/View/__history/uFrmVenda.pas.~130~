@@ -1,0 +1,292 @@
+unit uFrmVenda;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, Controller.uClientes,
+  uFrmConsulta, Data.DB, FireDAC.Comp.Client, Controller.uPedidoCab, Generics.uController,
+  Controller.uPedidoItens, Resources.Strings.uStrSQLs, Controller.uProdutos,
+  Vcl.Grids, Vcl.DBGrids, Vcl.ComCtrls, Resources.Strings.uStrMensagens,
+  Vcl.Menus;
+
+type
+  TFrmVenda = class(TForm)
+    Pnl_Cabecalho: TPanel;
+    Lbl_Cliente: TLabel;
+    Edt_Cliente: TEdit;
+    Pnl_SelProdutos: TPanel;
+    Lbl_Produto: TLabel;
+    Edt_Produto: TEdit;
+    Lbl_ValorUni: TLabel;
+    Edt_ValorUni: TEdit;
+    Lbl_Quantidade: TLabel;
+    Edt_Quantidade: TEdit;
+    Btn_AddItem: TButton;
+    Dbg_Produtos: TDBGrid;
+    Stb_Rodape: TStatusBar;
+    Btn_CancelarPedido: TButton;
+    Btn_listarPedidos: TButton;
+    procedure Edt_ClienteKeyPress(Sender: TObject; var Key: Char);
+    procedure Edt_ProdutoKeyPress(Sender: TObject; var Key: Char);
+    procedure Btn_AddItemClick(Sender: TObject);
+    procedure Btn_listarPedidosClick(Sender: TObject);
+    procedure Dbg_ProdutosKeyPress(Sender: TObject; var Key: Char);
+    procedure Btn_CancelarPedidoClick(Sender: TObject);
+    procedure Dbg_ProdutosKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+  private
+    { Private declarations }
+    FrRetornoConsultaCliente: TRetornoConsulta;
+    FrRetornoConsultaProduto: TRetornoConsulta;
+    FrRetornoConsultaPedido: TRetornoConsulta;
+    FoQueryPedidoCab: TFDQuery;
+    FoControllerPedidoCab: IController;
+    FoControllerPedidoItens: IController;
+
+    procedure TrataRetornoCliente;
+    procedure TrataRetornoProduto;
+    procedure TratarRetornoPedido;
+    function GetTotalProduto: Extended;
+    procedure CondfigurarGrid;
+    procedure LimparConsultaProduto;
+    function GetTotalPedido: Extended;
+    procedure AtualizarTotalPedido;
+    procedure ConfigurarCamposInsersaoPedido;
+    procedure AtualizarTotalRodape;
+  public
+    { Public declarations }
+    class function New: TFrmVenda;
+  end;
+
+implementation
+
+{$R *.dfm}
+function TFrmVenda.GetTotalProduto: Extended;
+begin
+  Result := StrToFloat(Edt_Quantidade.Text) * StrToFloat(Edt_ValorUni.Text);
+end;
+
+procedure TFrmVenda.CondfigurarGrid;
+begin
+  if not Assigned(Dbg_Produtos.DataSource) then
+  begin
+    Dbg_Produtos.DataSource := TDataSource.Create(nil);
+  end;
+  Dbg_Produtos.DataSource.DataSet := TControllerPedidoItens(FoControllerPedidoItens).GetQueryInsert;
+end;
+
+procedure TFrmVenda.LimparConsultaProduto;
+begin
+  Edt_Produto.Text := EmptyStr;
+  Edt_ValorUni.Text := EmptyStr;
+  Edt_Quantidade.Text := EmptyStr;
+end;
+
+procedure TFrmVenda.Btn_AddItemClick(Sender: TObject);
+begin
+  with TControllerPedidoItens(FoControllerPedidoItens) do
+  begin
+    if Id < 0 then
+      MontarQueryVazia.AddItem.SetProduto(FrRetornoConsultaProduto.Codigo)
+    else
+      SetProduto(Dbg_Produtos.DataSource
+                             .DataSet
+                             .FieldByName(TConstCamposPedidoItens._ksCCIProduto)
+                             .AsInteger);
+
+    SetValorUni(StrToFloat(Edt_ValorUni.Text));
+    SetQuantidade(StrToFloat(Edt_Quantidade.Text));
+    SetTotal(GetTotalProduto);
+    SetPedido(FoControllerPedidoCab.Id);
+    Gravar;
+  end;
+  CondfigurarGrid;
+  LimparConsultaProduto;
+  AtualizarTotalPedido;
+  FoControllerPedidoItens.SetId(-1);
+end;
+
+procedure TFrmVenda.Btn_CancelarPedidoClick(Sender: TObject);
+begin
+  if MessageDlg('Deseja cancelar o pedido', TMsgDlgType.mtWarning, [TMsgDlgBtn.mbYes, TMsgDlgBtn.mbNo],0) > 0 then
+  begin
+    FoControllerPedidoItens.Cancelar;
+    FoControllerPedidoCab.Cancelar;
+    self.RecreateWnd;
+  end;
+end;
+
+procedure TFrmVenda.Btn_listarPedidosClick(Sender: TObject);
+begin
+  ZeroMemory(@FrRetornoConsultaCliente, SizeOf(FrRetornoConsultaCliente));
+  FrRetornoConsultaPedido := TFrmConsulta.New
+                                         .SetController(TControllerPedidoCab.New)
+                                         .ConfigurarConsulta
+                                         .MostrarConsulta;
+  TratarRetornoPedido;
+end;
+
+procedure TFrmVenda.Edt_ClienteKeyPress(Sender: TObject; var Key: Char);
+begin
+  inherited;
+  ZeroMemory(@FrRetornoConsultaCliente, SizeOf(FrRetornoConsultaCliente));
+  if not (Key in [#8]) then
+  begin
+    FrRetornoConsultaCliente := TFrmConsulta.New
+                                            .SetController(TControllerClientes.New)
+                                            .ConfigurarConsulta
+                                            .SetTextoConsulta(Edt_Cliente.Text + Key)
+                                            .MostrarConsulta;
+    Key := #0;
+  end;
+  TrataRetornoCliente;
+end;
+
+procedure TFrmVenda.ConfigurarCamposInsersaoPedido;
+begin
+  Edt_Cliente.Enabled := False;
+  Btn_listarPedidos.Enabled := False;
+end;
+
+procedure TFrmVenda.Dbg_ProdutosKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_DOWN then
+    Dbg_Produtos.DataSource.DataSet.Next;
+
+  if Key = VK_UP then
+    Dbg_Produtos.DataSource.DataSet.Prior;
+end;
+
+procedure TFrmVenda.Dbg_ProdutosKeyPress(Sender: TObject; var Key: Char);
+begin
+  if Key = #13 then
+  begin
+    FoControllerPedidoItens.SetId(Dbg_Produtos.DataSource
+                                              .DataSet
+                                              .FieldByName(FoControllerPedidoItens.CampoIdUpdate)
+                                              .AsInteger);
+
+    Edt_Produto.Text := TControllerProduto(TControllerProduto.new)
+                                             .GetDescricao(Dbg_Produtos.DataSource
+                                                                       .DataSet
+                                                                       .FieldByName(TConstCamposPedidoItens._ksCCIProduto)
+                                                                       .AsInteger);
+
+    Edt_Quantidade.Text :=Dbg_Produtos.DataSource.DataSet
+                                                 .FieldByName(TConstCamposPedidoItens._ksCCIQuantidade)
+                                                 .AsString;
+
+    Edt_ValorUni.Text := Dbg_Produtos.DataSource.DataSet
+                                                .FieldByName(TConstCamposPedidoItens._ksCCIValorUni)
+                                                .AsString;
+
+    Edt_Quantidade.SetFocus;
+
+  end;
+end;
+
+procedure TFrmVenda.Edt_ProdutoKeyPress(Sender: TObject; var Key: Char);
+begin
+  inherited;
+  ZeroMemory(@FrRetornoConsultaProduto, SizeOf(FrRetornoConsultaProduto));
+  if not (Key in [#8]) then
+  begin
+    FrRetornoConsultaProduto := TFrmConsulta.New
+                                     .SetController(TControllerProduto.New)
+                                     .ConfigurarConsulta
+                                     .SetTextoConsulta(Edt_Produto.Text + Key)
+                                     .MostrarConsulta;
+    Key := #0;
+  end;
+  Edt_ValorUni.Text := EmptyStr;
+  TrataRetornoProduto;
+end;
+
+class function TFrmVenda.New: TFrmVenda;
+begin
+  Result := TFrmVenda.Create(nil);
+  Result.FoControllerPedidoCab := TControllerPedidoCab.New;
+  Result.FoControllerPedidoItens := TControllerPedidoItens.New;
+end;
+
+procedure TFrmVenda.TrataRetornoCliente;
+begin
+  Edt_Cliente.OnKeyPress := nil;
+  if FrRetornoConsultaCliente.Codigo > 0 then
+  begin
+    Edt_Cliente.Text := FrRetornoConsultaCliente.Descricao;
+
+    TControllerPedidoCab(FoControllerPedidoCab).MontarQueryVazia
+                                               .PreparaQuery
+                                               .SetCliente(FrRetornoConsultaCliente.Codigo);
+    FoControllerPedidoCab.Gravar;
+    FoControllerPedidoCab.AtualizarIdByCampoIdUpdate;
+  end;
+  Edt_Cliente.OnKeyPress := Edt_ClienteKeyPress;
+  ConfigurarCamposInsersaoPedido;
+end;
+
+procedure TFrmVenda.TrataRetornoProduto;
+begin
+  Edt_Produto.OnKeyPress := nil;
+  if FrRetornoConsultaProduto.Codigo > 0 then
+  begin
+    Edt_Produto.Text := FrRetornoConsultaProduto.Descricao;
+    Edt_ValorUni.Text := TControllerProduto(TControllerProduto.New).GetValorUnitario(FrRetornoConsultaProduto.Codigo).ToString;
+  end;
+  Edt_Produto.OnKeyPress := Edt_ProdutoKeyPress;
+end;
+
+procedure TFrmVenda.TratarRetornoPedido;
+var
+  oQueryPeiddo: TFDQuery;
+  oQueryItens: TFDQuery;
+begin
+  if FrRetornoConsultaPedido.Codigo > 0 then
+  begin
+    oQueryPeiddo := FoControllerPedidoCab.SetId(FrRetornoConsultaPedido.Codigo).PrepararQueryId;
+    TControllerPedidoCab(FoControllerPedidoCab.SetQueryDados(oQueryPeiddo)
+                                              .SetId(FrRetornoConsultaPedido.Codigo))
+                                              .PreparaQuery;
+    Edt_Cliente.Text := TControllerPedidoCab(FoControllerPedidoCab).GetNomeCliente;
+
+    oQueryItens := FoControllerPedidoItens.SetId(FrRetornoConsultaPedido.Codigo).PrepararQueryId;
+    FoControllerPedidoItens.SetQueryDados(oQueryItens);
+    CondfigurarGrid;
+    AtualizarTotalRodape;
+    FoControllerPedidoItens.SetId(-1);
+  end;
+end;
+
+procedure TFrmVenda.AtualizarTotalRodape;
+begin
+  Stb_Rodape.Panels[0].Text := Format(TConstMensagens._ksCMTotalPedido,[GetTotalPedido.ToString]);
+end;
+
+procedure TFrmVenda.AtualizarTotalPedido;
+begin
+  TControllerPedidoCab(FoControllerPedidoCab).SetTotal(GetTotalPedido);
+  FoControllerPedidoCab.Gravar;
+  AtualizarTotalRodape;
+end;
+
+function TFrmVenda.GetTotalPedido: Extended;
+begin
+  Result := 0;
+  Dbg_Produtos.DataSource.DataSet.DisableControls;
+  if Assigned(Dbg_Produtos.DataSource.DataSet) then
+    with Dbg_Produtos.DataSource.DataSet do
+    begin
+      First;
+      while not Eof do
+      begin
+        Result := Result + FieldByName(TConstCamposPedidoItens._ksCCITotal).AsFloat;
+        Next;
+      end;
+    end;
+  Dbg_Produtos.DataSource.DataSet.EnableControls;
+end;
+
+end.

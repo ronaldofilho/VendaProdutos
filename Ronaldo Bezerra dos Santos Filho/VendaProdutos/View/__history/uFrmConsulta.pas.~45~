@@ -1,0 +1,109 @@
+unit uFrmConsulta;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.DB, Vcl.StdCtrls, Vcl.ExtCtrls,
+  Vcl.Grids, Vcl.DBGrids, Generics.uController, FireDAC.Comp.Client;
+
+type
+  TRetornoConsulta = record
+    Codigo: integer;
+    Descricao: string;
+  end;
+
+  TFrmConsulta = class(TForm)
+    Dbg_Consulta: TDBGrid;
+    Pnl_CamposConsulta: TPanel;
+    Lbl_Consulta: TLabel;
+    Edt_Consulta: TEdit;
+    procedure Dbg_ConsultaDblClick(Sender: TObject);
+    procedure Edt_ConsultaChange(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+  private
+    { Private declarations }
+    FoController: IController;
+    FoQueryRetorno: TFDQuery;
+  public
+    { Public declarations }
+    class function New: TFrmConsulta;
+    function SetController(AiController: IController): TFrmConsulta;
+    function GetQuerySelecao: TFDQuery;
+    function ConfigurarConsulta: TFrmConsulta;
+    function MostrarConsulta: TRetornoConsulta;
+    function SetTextoConsulta(AsTexto: string): TFrmConsulta;
+  end;
+
+implementation
+
+{$R *.dfm}
+
+{ TFrmConsulta }
+
+function TFrmConsulta.ConfigurarConsulta: TFrmConsulta;
+begin
+  Result := Self;
+  Dbg_Consulta.DataSource := TDataSource.Create(Self);
+  Dbg_Consulta.DataSource.DataSet := FoController.QueryListaTodos;
+end;
+
+procedure TFrmConsulta.Dbg_ConsultaDblClick(Sender: TObject);
+begin
+  Self.ModalResult := mrOk;
+  Self.Close;
+end;
+
+procedure TFrmConsulta.Edt_ConsultaChange(Sender: TObject);
+begin
+  if Length(Edt_Consulta.Text) > 0 then
+  begin
+    Dbg_Consulta.DataSource.DataSet := FoController.SetFiltro(Edt_Consulta.Text)
+                                                   .QueryListaConsulta;
+  end
+  else
+    Dbg_Consulta.DataSource.DataSet := FoController.QueryListaTodos;
+end;
+
+procedure TFrmConsulta.FormShow(Sender: TObject);
+begin
+  Edt_Consulta.SetFocus;
+  Edt_Consulta.SelStart := Length(Edt_Consulta.Text);
+  Edt_Consulta.SelLength := 0;
+end;
+
+function TFrmConsulta.GetQuerySelecao: TFDQuery;
+begin
+  Result := TFDQuery(Dbg_Consulta.DataSource.DataSet);
+end;
+
+function TFrmConsulta.MostrarConsulta: TRetornoConsulta;
+begin
+  if (Dbg_Consulta.DataSource.DataSet.RecordCount > 1) then
+    Self.ShowModal;
+  if Self.ModalResult = mrOk then
+  begin
+    Result.Codigo := Dbg_Consulta.DataSource.DataSet.FieldByName(FoController.CampoCodigo).AsInteger;
+    Result.Descricao := Dbg_Consulta.DataSource.DataSet.FieldByName(FoController.CampoDescricao).AsString;
+  end;
+end;
+
+class function TFrmConsulta.New: TFrmConsulta;
+begin
+  Result := TFrmConsulta.Create(nil);
+  Result.ModalResult := mrCancel;
+end;
+
+function TFrmConsulta.SetController(AiController: IController): TFrmConsulta;
+begin
+  Result := Self;
+  FoController := AiController;
+end;
+
+function TFrmConsulta.SetTextoConsulta(AsTexto: string): TFrmConsulta;
+begin
+  Result := Self;
+  Edt_Consulta.Text := AsTexto;
+end;
+
+end.

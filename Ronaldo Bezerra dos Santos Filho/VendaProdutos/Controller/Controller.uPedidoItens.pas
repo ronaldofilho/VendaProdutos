@@ -1,0 +1,117 @@
+unit Controller.uPedidoItens;
+
+interface
+uses Generics.uController, Resources.Strings.uStrSQLs, SysUtils, FireDAC.Comp.Client,
+Data.DB;
+type
+  TControllerPedidoItens = class(TGenericController)
+  private
+    procedure CheckQueryState;
+    procedure SetCampoValor(const AnCampo: string; const AvValor: Variant);
+  public
+    class function New: IController; overload;
+    function SetCamposCodigoDescricao: IController; override;
+    function AddItem: TControllerPedidoItens;
+    function SetProduto(const AnProduto: integer): TControllerPedidoItens;
+    function SetValorUni(const AeValorUni: Extended): TControllerPedidoItens;
+    function SetQuantidade(const AnQuantidade: Extended): TControllerPedidoItens;
+    function SetTotal(const AnTotal: Extended): TControllerPedidoItens;
+    function SetPedido(const AnPedido: integer): TControllerPedidoItens;
+    function MontarQueryVazia: TControllerPedidoItens;
+    function GetQueryInsert: TFDQuery;
+  end;
+
+implementation
+
+{ TControllerPedidoItens }
+
+class function TControllerPedidoItens.New: IController;
+begin
+  inherited;
+  Result := TControllerPedidoItens.Create;
+  Result.SetTabela(TConstTabelas._ksCTPedidoItens)
+        .SetCamposListaTodos(TConstCamposPedidoItens.GetListaCamposSQL)
+        .SetCamposInsertUpdate(TConstCamposPedidoItens.GetListaCamposInsetUpdate)
+        .SetCampoIdUpdate(TConstCamposPedidoItens._ksCCICodigo)
+        .SetCamposCodigoDescricao;
+end;
+
+function TControllerPedidoItens.SetCamposCodigoDescricao: IController;
+begin
+  SetCamposCodigoDescricao(TConstCamposPedidoItens._ksCCIPedido,
+                           EmptyStr);
+end;
+
+procedure TControllerPedidoItens.CheckQueryState;
+begin
+  if not (GetQueryDados.State in [dsEdit, dsInsert]) then
+  begin
+    if GetQueryDados.IsEmpty then
+      GetQueryDados.Append
+    else
+      GetQueryDados.Edit;
+  end;
+end;
+
+function TControllerPedidoItens.GetQueryInsert: TFDQuery;
+begin
+  Result := GetQueryDados;
+end;
+
+procedure TControllerPedidoItens.SetCampoValor(const AnCampo: string; const AvValor: Variant);
+begin
+  CheckQueryState;
+  GetQueryDados.FindField(AnCampo).Value := AvValor;
+end;
+
+function TControllerPedidoItens.SetPedido(
+  const AnPedido: integer): TControllerPedidoItens;
+begin
+  Result := Self;
+  SetCampoValor(TConstCamposPedidoItens._ksCCIPedido, AnPedido);
+end;
+
+function TControllerPedidoItens.SetProduto(
+  const AnProduto: integer): TControllerPedidoItens;
+begin
+  Result := Self;
+  SetCampoValor(TConstCamposPedidoItens._ksCCIProduto, AnProduto);
+end;
+
+function TControllerPedidoItens.SetQuantidade(
+  const AnQuantidade: Extended): TControllerPedidoItens;
+begin
+  Result := Self;
+  SetCampoValor(TConstCamposPedidoItens._ksCCIQuantidade, AnQuantidade);
+end;
+
+function TControllerPedidoItens.SetTotal(
+  const AnTotal: Extended): TControllerPedidoItens;
+begin
+  Result := Self;
+  SetCampoValor(TConstCamposPedidoItens._ksCCITotal, AnTotal);
+end;
+
+function TControllerPedidoItens.SetValorUni(
+  const AeValorUni: Extended): TControllerPedidoItens;
+begin
+  Result := Self;
+  SetCampoValor(TConstCamposPedidoItens._ksCCIValorUni, AeValorUni);
+end;
+
+function TControllerPedidoItens.MontarQueryVazia: TControllerPedidoItens;
+var
+  oQuery: TFDQuery;
+begin
+  Result := Self;
+  oQuery := QueryVazio;
+  SetQueryDados(oQuery);
+end;
+
+function TControllerPedidoItens.AddItem: TControllerPedidoItens;
+begin
+  Result := Self;
+  GetQueryDados.Append;
+end;
+
+end.

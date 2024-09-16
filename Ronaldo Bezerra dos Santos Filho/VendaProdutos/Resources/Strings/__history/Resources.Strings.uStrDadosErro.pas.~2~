@@ -1,0 +1,13 @@
+unit Resources.Strings.uStrDadosErro;
+
+interface
+type
+  TConstDadosErro = class
+  public
+  const
+    _ksCDErroConexao = 'Falaha ao conectar ao banco de dados, confira os dados da conexão e tente novamente';
+  end;
+
+implementation
+
+end.

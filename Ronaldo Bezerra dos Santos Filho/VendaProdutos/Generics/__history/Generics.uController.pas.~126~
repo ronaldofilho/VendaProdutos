@@ -1,0 +1,357 @@
+unit Generics.uController;
+
+interface
+uses FIREdac.Comp.Client, Resources.Strings.uStrSQLs, SysUtils, Generics.uConexao,
+Resources.Strings.uStrDadosErro, Classes, Resources.Strings.uStrUtils, Data.DB;
+type
+  IController = interface
+  ['{88D7B282-0959-4CE9-8F05-C5221B7D5AB3}']
+    function SetCamposListaTodos(const Value: string): IController;
+    function SetFiltro(const Value: string): IController;
+    function SetTabela(const Value: string): IController;
+    function SetCamposInsertUpdate(const Value: string): IController;
+    function SetId(const Value: integer): IController;
+    function GerarListaTodos: TFDQuery;
+    function GerarListaFiltro: TFDQuery;
+    function GerarListaConsulta: TFDQuery;
+    function GerarQueryVazio: TFDQuery;
+    function SetCamposCodigoDescricao(const AsCampoCodigo, AsCampoDescricao: string): IController; overload;
+    function SetCamposCodigoDescricao: IController; overload;
+    function GetCampoCodigo: string;
+    function GetCampoDescricao: string;
+    function GetId: integer;
+    function Gravar: IController;
+    function SetQueryDados(const AoQuery: TFDQuery): IController;
+
+
+    property QueryListaTodos: TFDQuery read GerarListaTodos;
+    property QueryListaFiltro: TFDQuery read GerarListaFiltro;
+    property QueryListaConsulta: TFDQuery read GerarListaConsulta;
+    property QueryVazio: TFDQuery read GerarQueryVazio;
+    property CampoCodigo: string read GetCampoCodigo;
+    property CampoDescricao: string read GetCampoDescricao;
+    property Id: integer read GetId;
+  end;
+
+  TGenericController = class(TInterfacedObject, IController)
+  private
+    FsTabela: string;
+    FsCamposListaTodos: string;
+    FsFiltro: string;
+    FsCamposInsertUpdate: string;
+    FsCampoCodigo: string;
+    FsCampoDescricao: string;
+    FoQuery: TFDQuery;
+    FoConexao: TFDConnection;
+    FnId: integer;
+    FoQueryDados: TFDQuery;
+
+    function GetQuery: TFDQuery;
+    procedure SetSQLLista(var AoQuery: TFDQuery);
+    function GetSQLFiltro: string;
+    procedure SetSQLConsulta(var AoQuery: TFDQuery);
+    function GerarListaTodos: TFDQuery;
+    function GerarListaFiltro: TFDQuery;
+    function GerarListaConsulta: TFDQuery;
+    function GerarQueryVazio: TFDQuery;
+    function MontarFiltroConsulta: string;
+    function GetCampoCodigo: string;
+    function GetCampoDescricao: string;
+    function GetId: integer;
+    function GetSqlInsert(const AoDados: TFDQuery): string;
+    procedure  FormatFieldValue(var AsLista: string; const AsValor: string);
+
+  public
+    class function New: IController; Virtual;
+    constructor Create;
+    function SetCamposListaTodos(const Value: string): IController;
+    function SetFiltro(const Value: string): IController;
+    function SetTabela(const Value: string): IController;
+    function SetCamposInsertUpdate(const Value: string): IController;
+    function SetId(const Value: integer): IController;
+    function SetCamposCodigoDescricao(const AsCampoCodigo, AsCampoDescricao: string): IController; overload;
+    function SetCamposCodigoDescricao: IController; overload; virtual; abstract;
+    function SetQueryDados(const AoQuery: TFDQuery): IController;
+    function GetQueryDados: TFDQuery;
+    function Gravar: IController;
+
+  published
+    property Tabela: string read FsTabela;
+    property CamposListaTodos: string read FsCamposListaTodos;
+    property Filtro: string read FsFiltro;
+    property CamposInsertUpdate: string read FsCamposInsertUpdate;
+    property QueryListaTodos: TFDQuery read GerarListaTodos;
+    property QueryListaFiltro: TFDQuery read GerarListaFiltro;
+    property QueryListaConsulta: TFDQuery read GerarListaConsulta;
+    property QueryVazio: TFDQuery read GerarQueryVazio;
+    property CampoCodigo: string read GetCampoCodigo;
+    property CampoDescricao: string read GetCampoDescricao;
+    property Id: integer read GetId;
+  end;
+
+implementation
+
+{ TGenericController }
+
+constructor TGenericController.Create;
+begin
+  FoConexao := TConexao
+               .New
+               .CarregarArquivo
+               .ConfigurarConexao
+               .TestarConexao
+               .Conexao;
+end;
+
+function TGenericController.GerarListaConsulta: TFDQuery;
+begin  FoConexao.StartTransaction;
+  try
+    Result := GetQuery;
+    SetSQLConsulta(Result);
+    Result.Open;
+    FoConexao.Commit;
+  except on E: Exception do
+    begin
+      FoConexao.Rollback;
+      raise Exception.Create(Format(TConstDadosErro._ksCDErroSelectLista, [Self.Tabela]));
+    end;
+  end;
+end;
+
+function TGenericController.GerarListaFiltro: TFDQuery;
+begin
+  FoConexao.StartTransaction;
+  try
+    Result := GetQuery;
+    Result.Open(GetSQLFiltro);
+    FoConexao.Commit;
+  except on E: Exception do
+    begin
+      FoConexao.Rollback;
+      raise Exception.Create(Format(TConstDadosErro._ksCDErroSelectLista, [Self.Tabela]));
+    end;
+  end;
+end;
+
+function TGenericController.GerarListaTodos: TFDQuery;
+begin
+  FoConexao.StartTransaction;
+  try
+    Result := GetQuery;
+    SetSQLLista(Result);
+    Result.Open();
+    FoConexao.Commit;
+  except on E: Exception do
+    begin
+      FoConexao.Rollback;
+      raise Exception.Create(Format(TConstDadosErro._ksCDErroSelectLista, [Self.Tabela]));
+    end;
+  end;
+end;
+
+function TGenericController.GerarQueryVazio: TFDQuery;
+var
+  sFiltroTemp: string;
+begin
+  sFiltroTemp := Self.Filtro;
+  SetFiltro('-1');
+  Result := Self.QueryListaConsulta;
+  SetFiltro(sFiltroTemp);
+end;
+
+function TGenericController.GetCampoCodigo: string;
+begin
+  Result := FsCampoCodigo;
+end;
+
+function TGenericController.GetCampoDescricao: string;
+begin
+  Result := FsCampoDescricao;
+end;
+
+function TGenericController.GetId: integer;
+begin
+  Result := FnId;
+end;
+
+function TGenericController.GetQuery: TFDQuery;
+begin
+  Result := TFDQuery.Create(nil);
+  Result.Connection := FoConexao;
+end;
+
+function TGenericController.GetQueryDados: TFDQuery;
+begin
+  Result := FoQueryDados;
+end;
+
+procedure TGenericController.SetSQLConsulta(var AoQuery: TFDQuery);
+var
+  sAux: string;
+begin
+  sAux := MontarFiltroConsulta;
+  if sAux <> EmptyStr then
+  begin
+    With AoQuery do
+    begin
+      SQL.Add(TConstSql._ksCSListaComFiltro);
+      MacroByName(TConstMacros._ksCMCampos).AsIdentifier := Self.CamposListaTodos;
+      MacroByName(TConstMacros._ksCMTabela).AsIdentifier := Self.Tabela;
+      MacroByName(TConstMacros._ksCMFiltro).AsIdentifier := Self.Filtro;
+    end;
+  end
+  else
+    SetSQLLista(AoQuery);
+end;
+
+function TGenericController.GetSQLFiltro: string;
+begin
+  Result := Format(TConstSql._ksCSListaComFiltro,[Self.CamposListaTodos, Self.Tabela, Self.Filtro]);
+end;
+
+function TGenericController.GetSqlInsert(const AoDados: TFDQuery): string;
+var
+  lCampos: TStringList;
+  nAux: integer;
+  sValues: string;
+  oField: TField;
+begin
+  sValues := EmptyStr;
+  lCampos := TStringList.Create;
+  lCampos.Delimiter := ',';
+  lCampos.DelimitedText := CamposInsertUpdate;
+  lCampos.StrictDelimiter := True;
+  for nAux := 0 to Pred(lCampos.Count) do
+  begin
+    oField := AoDados.FindField(lCampos.Strings[nAux]);
+    if (ofield.DataType in [ftString, ftWord, ftDate, ftDateTime, ftTime, ftBlob, ftMemo, ftWideString]) then
+      FormatFieldValue(sValues, QuotedStr(oField.Value));
+
+    if (ofield.DataType in [ftInteger, ftSmallint, ftShortint, ftLargeint]) then
+      FormatFieldValue(sValues, IntToStr(oField.AsInteger));
+
+    if (ofield.DataType in [ftFloat, ftExtended, ftCurrency]) then
+      FormatFieldValue(sValues, FloatToStr(oField.AsFloat));
+  end;
+  Result := Format(TConstSql._ksCSInsert, [Self.Tabela, Self.CamposInsertUpdate, sValues]);
+end;
+
+procedure TGenericController.FormatFieldValue(var AsLista: string; const AsValor: string);
+begin
+  if AsLista <> EmptyStr then
+    AsLista := AsLista + ',' + AsValor
+  else
+    AsLista := AsValor;
+end;
+
+procedure TGenericController.SetSQLLista(var AoQuery: TFDQuery);
+begin
+  AoQuery.SQL.Add(TConstSql._ksCSListaTodos);
+  AoQuery.MacroByName(TConstMacros._ksCMCampos).AsIdentifier := Self.CamposListaTodos;
+  AoQuery.MacroByName(TConstMacros._ksCMTabela).AsIdentifier := Self.Tabela;
+end;
+
+function TGenericController.Gravar: IController;
+var
+  oQuery: TFDQuery;
+begin
+  FoConexao.StartTransaction;
+  try
+    Result := Self;
+    oQuery := GetQuery;
+    if oQuery.ExecSQL(GetSqlInsert(FoQueryDados)) > 0 then
+    begin
+      FreeAndNil(FoQueryDados);
+      FoQueryDados := QueryListaTodos;
+    end;
+    FoConexao.Commit;
+  except on E: Exception do
+    begin
+      FoConexao.Rollback;
+      raise Exception.Create(Format(TConstDadosErro._ksCDErroSelectLista, [Self.Tabela]));
+    end;
+  end;
+end;
+
+function TGenericController.MontarFiltroConsulta: string;
+var
+  nAux: Integer;
+  nIndice: Integer;
+  lFiltros: TStringList;
+begin
+  Result := EmptyStr;
+  lFiltros := TStringList.Create;
+  lfiltros.Delimiter := TConstDelimiSep._ksCDSDelimitadorLista;
+  lFiltros.Text := Self.Filtro;
+  lFiltros.StrictDelimiter := True;
+  for nIndice := 0 to Pred(lFiltros.Count) do
+  begin
+    if TryStrToInt(lFiltros.Strings[nIndice], nAux) then
+    begin
+      if Result <> EmptyStr then
+        Result := Result + TConstSQLClausulas._ksCSCAnd;
+
+      Result := Result + Format(TConstSql._ksCSListaFiltroConsultaCodigo,
+                               [Self.CampoCodigo, IntToStr(nAux)]);
+    end
+    else
+    begin
+      if Result <> EmptyStr then
+        Result := Result + TConstSQLClausulas._ksCSCOr;
+
+      Result := Format(TConstSql._ksCSListaFiltroConsultaDescricao,
+                      [Self.CampoDescricao, QuotedStr(TConstSql._ksCSLike +
+                                                      lFiltros.Strings[nIndice] +
+                                                      TConstSql._ksCSLike).ToUpper]);
+    end;
+  end;
+end;
+
+class function TGenericController.New: IController;
+begin
+  Result := TGenericController.create;
+end;
+
+function TGenericController.SetCamposCodigoDescricao(const AsCampoCodigo,
+  AsCampoDescricao: string): IController;
+begin
+  FsCampoCodigo := AsCampoCodigo;
+  FsCampoDescricao := AsCampoDescricao;
+end;
+
+function TGenericController.SetCamposInsertUpdate(
+  const Value: string): IController;
+begin
+  Result := Self;
+  FsCamposInsertUpdate := Value;
+end;
+
+function TGenericController.SetCamposListaTodos(const Value: string): IController;
+begin
+  Result := Self;
+  FsCamposListaTodos := Value;
+end;
+
+function TGenericController.SetFiltro(const Value: string): IController;
+begin
+  Result := Self;
+  FsFiltro := Value;
+end;
+
+function TGenericController.SetId(const Value: integer): IController;
+begin
+  FnId := Value;
+end;
+
+function TGenericController.SetQueryDados(const AoQuery: TFDQuery): IController;
+begin
+  FoQueryDados := AoQuery;
+end;
+
+function TGenericController.SetTabela(const Value: string): IController;
+begin
+  Result := Self;
+  FsTabela := Value;
+end;
+
+end.

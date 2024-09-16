@@ -1,0 +1,65 @@
+unit uFrmDadosConexao;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Generics.uConexao, FMX.Dialogs;
+
+type
+  TFrmDadosConexao = class(TForm)
+    Lbl_Banco: TLabel;
+    Edt_Banco: TEdit;
+    Lbl_Usuario: TLabel;
+    Edt_Usuario: TEdit;
+    Lbl_Porta: TLabel;
+    Edt_Porta: TEdit;
+    Lbl_Senha: TLabel;
+    Edt_Senha: TEdit;
+    Btn_Gravar: TButton;
+    Lbl_Servidor: TLabel;
+    Edt_Servidor: TEdit;
+    Lbl_Biblioteca: TLabel;
+    Edt_Biblioteca: TEdit;
+    Btn_TestarConexao: TButton;
+    Btn_SelBiblioteca: TButton;
+    procedure Edt_PortaKeyPress(Sender: TObject; var Key: Char);
+    procedure FormKeyPress(Sender: TObject; var Key: Char);
+    procedure FormShow(Sender: TObject);
+    procedure Btn_TestarConexaoClick(Sender: TObject);
+  private
+    FiConexao: IConexao;
+
+  public
+    { Public declarations }
+  end;
+
+var
+  FrmDadosConexao: TFrmDadosConexao;
+
+implementation
+
+{$R *.dfm}
+
+procedure TFrmDadosConexao.Btn_TestarConexaoClick(Sender: TObject);
+begin
+  FiConexao.ConfigurarConexao.TestarConexao;
+end;
+
+procedure TFrmDadosConexao.Edt_PortaKeyPress(Sender: TObject; var Key: Char);
+begin
+  if not (key in ['0'..'9', #8]) then
+    Key := #0;
+end;
+
+procedure TFrmDadosConexao.FormKeyPress(Sender: TObject; var Key: Char);
+begin
+  SelectNext(Self.ActiveControl, True, True)
+end;
+
+procedure TFrmDadosConexao.FormShow(Sender: TObject);
+begin
+  FiConexao := TConexao.New.CarregarArquivo.PreencherTela(Self);
+end;
+
+end.

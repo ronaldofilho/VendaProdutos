@@ -1,0 +1,145 @@
+unit Resources.Strings.uStrSQLs;
+
+interface
+type
+  TConstSql = class
+  public
+  const
+    _ksCSListaTodos = 'SELECT !CAMPOS FROM !TABELA';
+    _ksCSListaJoin = _ksCSListaTodos + ' INNER JOIN !TABELAJOIN ON !TABELAJOIN.!CAMPOJOIN = !TABELA.!VALORJOIN ';
+    _ksCSUltimoId =  'SELECT MAX(!CAMPOCODIGO) FROM !TABELA';
+    _ksCSUltimoInserido = _ksCSListaTodos + ' WHERE !CAMPOCODIGO = (' + _ksCSUltimoId + ')';
+    _ksCSListaFiltroConsultaCodigo = '%s = %s';
+    _ksCSWhereFiltro = ' WHERE !FILTRO';
+    _ksCSListaComFiltro = _ksCSListaTodos + _ksCSWhereFiltro;
+    _ksCSInsert = 'INSERT INTO !TABELA (!CAMPOS) VALUES (!VALORES)';
+    _ksCSUpdate = 'UPDATE !TABELA SET !CAMPO = !VALOR '+_ksCSWhereFiltro;
+    _ksCSUpdate = 'DELETE FROM !TABELA '+_ksCSWhereFiltro;
+    _ksCSLike = '%';
+    _ksCSListaFiltroConsultaDescricao = 'UPPER(%s) like %s';
+  end;
+
+  TConstMacros = class
+  public
+  const
+    _ksCMCampos = 'CAMPOS';
+    _ksCMCampo = 'CAMPO';
+    _ksCMCampoJoin = 'CAMPOJOIN';
+    _ksCMTabela = 'TABELA';
+    _ksCMCamposCodigo = 'CAMPOCODIGO';
+    _ksCMValores = 'VALORES';
+    _ksCMValore = 'VALOR';
+    _ksCMValoreJoin = 'VALORJOIN';
+    _ksCMTabelaJoin = 'TABELAJOIN';
+    _ksCMFiltro = 'FILTRO';
+  end;
+
+  TConstSQLClausulas = class
+  public
+  const
+    _ksCSCAnd = ' AND ';
+    _ksCSCOr = ' OR ';
+  end;
+
+  TConstTabelas = class
+  public
+  const
+    _ksCTProdutos = 'PRODUTOS';
+    _ksCTClientes = 'CLIENTES';
+    _ksCTPedidoCab = 'PEDIDOCABECALHO';
+    _ksCTPedidoItens = 'PEDIDOITENS';
+  end;
+
+  TConstCamposProdutos = class
+  public
+  const
+    _ksCPCodigo = 'CODIGO';
+    _ksCPDescricao = 'DESCRICAO';
+    _ksCPPrecoVenda = 'PRECOVENDA';
+
+    class function GetListaCamposSQL: string; static;
+  end;
+
+  TConstCamposClientes = class
+  public
+  const
+    _ksCCCodigo = 'CODIGO';
+    _ksCCNome = 'NOME';
+    _ksCCCidade = 'CIDADE';
+    _ksCCUf = 'UF';
+
+    class function GetListaCamposSQL: string; static;
+  end;
+
+  TConstCamposPedidoCab = class
+  public
+  const
+    _ksCCPPedido = 'PEDIDO';
+    _ksCCPCliente = 'CLIENTE';
+    _ksCCPData = 'DATAVENDA';
+    _ksCCPTotal = 'TOTAL';
+
+    class function GetListaCamposSQL: string; static;
+    class function GetListaCamposInsetUpdate: string; static;
+    class function GetListaCamposSQLJoinCliente: string; static;
+  end;
+
+  TConstCamposPedidoItens = class
+  public
+  const
+    _ksCCICodigo = 'CODIGO';
+    _ksCCIPedido = 'PEDIDO';
+    _ksCCITotal = 'VALORTOTAL';
+    _ksCCIValorUni = 'VALORUNI';
+    _ksCCIQuantidade = 'QUANTIDADE';
+    _ksCCIProduto = 'PRODUTO';
+
+    class function GetListaCamposSQL: string; static;
+    class function GetListaCamposInsetUpdate: string; static;
+  end;
+implementation
+
+{ TConstCamposProdutos }
+
+class function TConstCamposProdutos.GetListaCamposSQL: string;
+begin
+  Result := _ksCPCodigo + ',' + _ksCPDescricao + ',' +  _ksCPPrecoVenda;
+end;
+
+{ TConstCamposClientes }
+
+class function TConstCamposClientes.GetListaCamposSQL: string;
+begin
+  Result := _ksCCCodigo + ',' + _ksCCNome + ',' + _ksCCCidade + ',' + _ksCCUf;
+end;
+
+{ TConstCamposPedidoItens }
+
+class function TConstCamposPedidoItens.GetListaCamposSQL: string;
+begin
+  Result := _ksCCICodigo + ',' + _ksCCIPedido + ',' + _ksCCIProduto + ',' + _ksCCITotal + ',' + _ksCCIValorUni + ',' + _ksCCIQuantidade;
+end;
+
+class function TConstCamposPedidoItens.GetListaCamposInsetUpdate: string;
+begin
+  Result := _ksCCIPedido + ',' + _ksCCIProduto + ',' + _ksCCITotal + ',' + _ksCCIValorUni + ',' + _ksCCIQuantidade;
+end;
+
+{ TConstCamposPedidoCab }
+
+class function TConstCamposPedidoCab.GetListaCamposInsetUpdate: string;
+begin
+  Result := _ksCCPCliente + ',' + _ksCCPTotal;
+end;
+
+class function TConstCamposPedidoCab.GetListaCamposSQL: string;
+begin
+  Result := _ksCCPPedido + ',' + _ksCCPCliente + ',' + _ksCCPData + ',' + _ksCCPTotal;
+end;
+
+class function TConstCamposPedidoCab.GetListaCamposSQLJoinCliente: string;
+begin
+  Result := _ksCCPPedido + ',' + TConstCamposClientes._ksCCNome + ',' + _ksCCPData + ',' + _ksCCPTotal;
+end;
+
+end.

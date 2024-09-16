@@ -1,0 +1,9 @@
+unit uStrDados;
+
+interface
+type
+  TDados
+
+implementation
+
+end.

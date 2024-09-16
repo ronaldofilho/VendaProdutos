@@ -1,0 +1,32 @@
+unit Controller.uProdutos;
+
+interface
+uses Generics.uController, Resources.Strings.uStrSQLs;
+type
+  TControllerProduto = class(TGenericController)
+
+  public
+    class function New: IController; overload;
+    function SetCamposCodigoDescricao: IController; overload;
+  end;
+
+implementation
+
+{ TControllerProduto }
+
+class function TControllerProduto.New: IController;
+begin
+  inherited;
+  Result := TControllerProduto.Create;
+  Result.SetTabela(TConstTabelas._ksCTProdutos)
+        .SetCamposListaTodos(TConstCamposProdutos.GetListaCamposSQL)
+        .SetCamposCodigoDescricao;
+end;
+
+function TControllerProduto.SetCamposCodigoDescricao: IController;
+begin
+  SetCamposCodigoDescricao(TConstCamposProdutos._ksCPCodigo,
+                           TConstCamposProdutos._ksCPDescricao);
+end;
+
+end.

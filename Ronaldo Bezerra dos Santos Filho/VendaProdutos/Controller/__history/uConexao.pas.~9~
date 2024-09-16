@@ -1,0 +1,35 @@
+unit uConexao;
+
+interface
+uses FireDAC.Comp.Client, System.IniFiles, uStrDados;
+
+type
+  TConexao = class
+  private
+    FsBanco: string;
+    FsBiblioteca: string;
+    FnPorta: integer;
+    FsServidor: string;
+    FsSenha: string;
+    FoIni: TIniFile;
+
+    function GetPath: string;
+  public
+    constructor Create;
+
+  published
+    property Banco: string read FsBanco write FsBanco;
+    property Biblioteca: string read FsBiblioteca write FsBiblioteca;
+    property Porta: integer read FnPorta write FnPorta;
+    property Servidor: string read FsServidor write FsServidor;
+    property Senha: string read FsSenha write FsSenha;
+  end;
+
+implementation
+
+constructor TConexao.Create;
+begin
+
+end;
+
+end.

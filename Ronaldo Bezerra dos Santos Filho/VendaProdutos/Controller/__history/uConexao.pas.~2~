@@ -1,0 +1,20 @@
+﻿unit uConexao;
+
+interface
+type
+  TConexao = class
+  private
+    FsBancp: string;
+    FsBiblioteca: string;
+    FnPorta: integer;
+    FsServidor: string;
+    FsSenha: string;
+
+  published
+    property Banco: string read FsBancp write FsBano
+    property Biblioteca
+  end;
+
+implementation
+
+end.

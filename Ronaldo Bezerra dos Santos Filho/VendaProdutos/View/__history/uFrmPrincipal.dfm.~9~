@@ -1,0 +1,42 @@
+object FrmPrincipal: TFrmPrincipal
+  Left = 0
+  Top = 0
+  Caption = 'Venda de Produtos'
+  ClientHeight = 526
+  ClientWidth = 1092
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -12
+  Font.Name = 'Segoe UI'
+  Font.Style = []
+  Menu = Mm_Principal
+  Position = poDesktopCenter
+  TextHeight = 15
+  object Mm_Principal: TMainMenu
+    Left = 768
+    Top = 272
+    object Mi_Consulta: TMenuItem
+      Caption = 'Consulta'
+      object Smi_ConsultaProdutos: TMenuItem
+        Caption = 'Produtos'
+        OnClick = Smi_ConsultaProdutosClick
+      end
+      object Smi_Clientes: TMenuItem
+        Caption = 'Clientes'
+        OnClick = Smi_ClientesClick
+      end
+    end
+    object Mi_Venda: TMenuItem
+      Caption = 'Venda'
+      OnClick = Mi_VendaClick
+    end
+    object Mi_Configuracao: TMenuItem
+      Caption = 'Configura'#231#227'o'
+      object Smi_Conexao: TMenuItem
+        Caption = 'Conex'#227'o'
+        OnClick = Smi_ConexaoClick
+      end
+    end
+  end
+end

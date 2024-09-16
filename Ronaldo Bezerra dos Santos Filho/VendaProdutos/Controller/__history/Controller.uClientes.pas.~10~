@@ -1,0 +1,30 @@
+unit Controller.uClientes;
+
+interface
+uses Generics.uController, Resources.Strings.uStrSQLs;
+type
+  TControllerClientes = class(TGenericController)
+  public
+    class function New: IController; overload;
+    function SetCamposCodigoDescricao: IController; override;
+  end;
+
+implementation
+
+{ TControllerClientes }
+
+class function TControllerClientes.New: IController;
+begin
+  inherited;
+  Result := TControllerClientes.Create;
+  Result.SetTabela(TConstTabelas._ksCTClientes)
+        .SetCamposListaTodos(TConstCamposClientes.GetListaCamposSQL)
+        .SetCamposCodigoDescricao;
+end;
+
+function TControllerClientes.SetCamposCodigoDescricao: IController;
+begin
+  SetCamposCodigoDescricao(TConstCamposProdutos._ksCPCodigo,
+                           TConstCamposProdutos._ksCPDescricao);
+end;
+end.
